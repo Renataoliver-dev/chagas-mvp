@@ -1,122 +1,481 @@
-# Chagas MVP V3 — Quanto este aluno sabe?
+# Chagas MVP — Quanto este aluno sabe?
 
-Protótipo explicável de estimativa de domínio de micro-habilidades, diagnóstico educacional e recomendação de estudos. Dados fictícios fornecidos no desafio Chagas AI. Não é uma avaliação de competência clínica.
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-Data_Analysis-150458?style=flat-square&logo=pandas)
+![NetworkX](https://img.shields.io/badge/NetworkX-Graph_Theory-005C53?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Protótipo-2E8B57?style=flat-square)
 
-## Executar no Linux
+## 1. Sobre o projeto
 
-Abra a pasta `chagas_mvp_v3` no VS Code. Python 3.10 ou superior.
+Protótipo desenvolvido para o desafio técnico Chagas AI — "Quanto este aluno sabe?".
+O projeto propõe uma abordagem computacional para estimar o domínio de micro-habilidades de estudantes de medicina, identificar possíveis dificuldades de aprendizagem e orientar recomendações personalizadas de estudo.
+A solução integra modelagem probabilística, teoria dos grafos, análise relacional e feedback formativo, buscando transformar o histórico de respostas dos estudantes em informações interpretáveis e educacionalmente relevantes.
+Os dados utilizados são fictícios e foram fornecidos no contexto do desafio técnico. As estimativas produzidas não constituem uma avaliação de competência clínica.
 
-Se as três bibliotecas já estiverem instaladas no interpretador escolhido, execute diretamente:
+## 2. Objetivos
 
-```bash
-python3 src/main.py
+- Estimar probabilisticamente o domínio de cada micro-habilidade.
+- Identificar relações entre habilidades presentes nas questões.
+- Investigar possíveis dificuldades individuais e relacionais.
+- Priorizar ações de estudo de acordo com as evidências observadas.
+- Produzir feedback formativo personalizado.
+- Comparar experimentalmente diferentes abordagens de previsão de desempenho.
+
+## 3. Arquitetura da solução
+
+```mermaid
+flowchart TD
+    A[Histórico de respostas] --> B[Carregamento e validação dos dados]
+
+    B --> C[Bayesian Knowledge Tracing]
+    B --> D[Grafo de habilidades]
+    B --> E[Análise relacional]
+
+    C --> F[Diagnóstico educacional]
+    D --> F
+    E --> F
+
+    F --> G[Recomendações personalizadas]
+    G --> H[Feedback formativo]
+
+    B --> I[Validação preditiva exploratória]
+
+    H --> J[Exportação dos resultados]
+    I --> J
 ```
 
-Caso precise instalar dependências, use um ambiente virtual:
+A arquitetura modular permite separar as responsabilidades de cada componente, facilitando a interpretação, manutenção, reprodução e evolução do protótipo.
+
+## 4. Estrutura do projeto
+
+```text
+chagas-mvp/
+│
+├── data/
+│   ├── habilidades.csv
+│   ├── questoes.csv
+│   └── respostas.csv
+│
+├── src/
+│   ├── bkt.py
+│   ├── grafo.py
+│   ├── analise_relacional.py
+│   ├── diagnostico.py
+│   ├── recomendacao.py
+│   ├── feedback_formativo.py
+│   ├── validacao.py
+│   └── main.py
+│
+├── outputs/
+│   └── Arquivos de resultados
+│
+├── tests/
+│   └── test_algoritmos.py
+│
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
+
+### Responsabilidades dos módulos
+
+| Arquivo | Responsabilidade |
+| --- | --- |
+| `bkt.py` | Estimar o domínio probabilístico para todos os pares aluno–habilidade. |
+| `grafo.py` | Construir o grafo de coocorrências e calcular a prioridade experimental. |
+| `analise_relacional.py` | Comparar o desempenho em questões individuais e conjuntas. |
+| `diagnostico.py` | Combinar evidências sem modificar as probabilidades estimadas pelo BKT. |
+| `recomendacao.py` | Ordenar ações de estudo e apresentar suas justificativas. |
+| `feedback_formativo.py` | Produzir feedback com observações, interpretações, ações e limitações. |
+| `validacao.py` | Comparar previsões sequenciais de acerto com modelos estatísticos de referência. |
+| `main.py` | Validar os dados e coordenar a execução dos módulos. |
+| `test_algoritmos.py` | Executar testes unitários e de integração. |
+
+## 5. Instalação e execução
+
+### Pré-requisitos
+
+- Python 3.10 ou superior;
+- Git (opcional, para clonar o repositório);
+- Dependências especificadas no arquivo `requirements.txt`.
+
+Após baixar ou clonar o repositório, abra o terminal na pasta raiz do projeto.
+
+Recomenda-se a utilização de um ambiente virtual para isolar as dependências.
+
+### Linux
+
+Crie e ative o ambiente virtual:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
+
+Instale as dependências:
+
+```bash
 python -m pip install -r requirements.txt
+```
+
+Execute o protótipo:
+
+```bash
 python src/main.py
 ```
 
-Por padrão, o terminal exibe A03. Para escolher outro aluno:
+### Windows (PowerShell)
 
-```bash
-python3 src/main.py --aluno A01
+Crie e ative o ambiente virtual:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
-Os nove CSVs de resultados, a imagem do grafo e os relatórios Markdown individuais são regenerados a cada execução. Os dados originais não são modificados. `--data` e `--output` permitem indicar outras pastas. Para executar os testes:
+Instale as dependências:
 
-```bash
-python3 -m unittest discover -s tests -v
+```powershell
+python -m pip install -r requirements.txt
 ```
 
-## Estrutura
+Execute o protótipo:
 
-| Arquivo | Responsabilidade |
+```powershell
+python src/main.py
+```
+
+Caso o PowerShell bloqueie a ativação do ambiente virtual, utilize diretamente o interpretador:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe src/main.py
+```
+
+### macOS
+
+Crie e ative o ambiente virtual:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Instale as dependências:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Execute o protótipo:
+
+```bash
+python src/main.py
+```
+
+> O ambiente de desenvolvimento e testes utilizado foi Linux. As instruções para Windows e macOS foram disponibilizadas para facilitar a reprodução do projeto, embora a execução nesses sistemas ainda não tenha sido verificada experimentalmente.
+
+### Seleção de estudante
+
+Por padrão, o terminal apresenta os resultados do estudante A03.
+Para selecionar outro estudante, com o ambiente virtual ativo:
+
+```bash
+python src/main.py --aluno A01
+```
+
+Os resultados de todos os estudantes são exportados independentemente do estudante selecionado para exibição no terminal.
+
+### Testes automatizados
+
+Para executar os testes unitários e de integração:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Caso esteja utilizando o interpretador diretamente no Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+O protótipo possui 10 testes automatizados.
+
+### Personalização dos diretórios
+
+Os argumentos `--data` e `--output` permitem indicar outros diretórios de entrada e saída.
+
+```bash
+python src/main.py --data data --output outputs
+```
+
+Os arquivos de dados originais são preservados durante a execução.
+
+## 6. Fundamentação metodológica
+
+### 6.1. Bayesian Knowledge Tracing (BKT)
+
+O Bayesian Knowledge Tracing é utilizado como modelo probabilístico de estimativa do domínio individual de cada micro-habilidade.
+
+O modelo atualiza a probabilidade de domínio a partir da sequência cronológica de respostas do estudante.
+
+| Parâmetro | Descrição | Valor inicial |
+| --- | --- | --- |
+| P(L0) | Probabilidade inicial de domínio | 0,20 |
+| P(T) | Probabilidade de aprendizagem | 0,05 |
+| P(S) | Probabilidade de erro apesar do domínio | 0,10 |
+| P(G) | Probabilidade de acerto sem domínio | 1 / número de alternativas |
+
+Após cada resposta, aplica-se o teorema de Bayes para atualizar a crença de domínio. Em seguida, considera-se a possibilidade de aprendizagem:
+
+$$
+P(L') = P(L \mid resposta) + [1-P(L \mid resposta)]P(T)
+$$
+
+A estimativa representa o estado de conhecimento após a oportunidade de aprendizagem.
+Os parâmetros utilizados constituem hipóteses iniciais e não valores calibrados empiricamente.
+Somente questões sem habilidade secundária atualizam diretamente o BKT, evitando atribuir erros em questões conjuntas exclusivamente à habilidade principal.
+Todas as tentativas dessas questões são preservadas em ordem cronológica.
+Na ausência de observações individuais, retorna-se a probabilidade inicial de 0,20, identificada explicitamente como uma estimativa sem evidências observadas.
+
+A coluna `taxa_acerto_observada` considera todas as tentativas em que a habilidade é principal, enquanto `taxa_individual` utiliza somente primeiras tentativas em questões isoladas.
+
+### 6.2. Grafo de habilidades
+
+As micro-habilidades são representadas como vértices de um grafo não direcionado.
+As arestas representam a coocorrência de duas habilidades em uma mesma questão, e seus pesos correspondem à quantidade de questões compartilhadas.
+A prioridade experimental de estudo é calculada por:
+
+$$
+Prioridade_i = (1-P_i)+0,25
+\frac{\sum_{j \in N(i)}w_{ij}(1-P_j)}
+{\sum_{j \in N(i)}w_{ij}}
+$$
+
+Onde:
+
+- `P_i` representa o domínio estimado da habilidade analisada;
+- `P_j` representa o domínio estimado de uma habilidade vizinha;
+- `w_ij` representa o peso da relação;
+- `N(i)` representa o conjunto de habilidades vizinhas.
+
+Na ausência de vizinhos, a contribuição relacional é considerada nula.
+A prioridade varia entre 0 e 1,25 e não representa uma probabilidade.
+O grafo não modifica as estimativas produzidas pelo BKT e não estabelece relações causais ou pré-requisitos pedagógicos.
+A prioridade é utilizada para ordenar ações individuais dentro de uma mesma etapa do plano de estudos.
+
+### 6.3. Análise relacional
+
+A análise relacional utiliza somente a primeira tentativa registrada de cada aluno em cada questão, tanto individual quanto conjunta.
+Para um par de habilidades A e B, são consideradas:
+
+- `a`: taxa de acertos em questões isoladas da habilidade A;
+- `b`: taxa de acertos em questões isoladas da habilidade B;
+- `c`: taxa de acertos em questões que envolvem ambas as habilidades.
+
+A diferença de desempenho é calculada por:
+
+$$
+D = \frac{a+b}{2}-c
+$$
+
+Esse indicador permite investigar possíveis diferenças entre o desempenho individual e conjunto.
+A análise utiliza os seguintes critérios exploratórios:
+
+| Critério | Valor |
 | --- | --- |
-| `src/bkt.py` | Estimar domínio por BKT, para todos os pares aluno–habilidade. |
-| `src/grafo.py` | Construir o grafo de coocorrências e calcular prioridade experimental. |
-| `src/analise_relacional.py` | Comparar questões individuais e conjuntas na primeira tentativa. |
-| `src/diagnostico.py` | Combinar evidências sem modificar as probabilidades BKT. |
-| `src/recomendacao.py` | Ordenar ações de estudo e explicar seus motivos. |
-| `src/feedback_formativo.py` | Explicar observações, interpretação, ação e limites por recomendação. |
-| `src/validacao.py` | Comparar previsões sequenciais de acerto com duas linhas de base. |
-| `src/main.py` | Validar os dados e executar todos os módulos em memória. |
-| `tests/test_algoritmos.py` | Testes unitários e de integração com os CSVs fornecidos. |
+| Mínimo de questões isoladas distintas por habilidade | 4 |
+| Mínimo de questões conjuntas | 2 |
+| Desempenho alto | A partir de 70% |
+| Desempenho baixo | Abaixo de 50% |
+| Diferença relevante | A partir de 25 pontos percentuais |
 
-## Saídas
+Os resultados são classificados como possíveis dificuldades, desempenho atípico, desempenho favorável, resultado inconclusivo ou evidência insuficiente.
+O indicador é descritivo e não constitui uma medida validada da capacidade de integração entre habilidades.
 
-- `estimativas_bkt_grafo.csv`: uma linha por aluno e habilidade, incluindo domínio BKT, prioridade, quantidade de tentativas primárias e quantidade de tentativas efetivamente usadas pelo BKT.
-- `arestas_grafo.csv`: relações não direcionadas e questões que justificam cada aresta.
-- `grafo_habilidades.png`: visualização das relações.
-- `desempenho_relacional.csv`: uma linha por aluno e par de habilidades, taxas, acertos, quantidade de questões distintas e classificação preliminar.
-- `diagnostico_alunos.csv`: indicadores individuais e alertas relacionais por aluno/habilidade.
-- `recomendacoes.csv`: plano ordenado por aluno, com alvo, ação e motivo.
+### 6.4. Diagnóstico educacional
 
-- `feedback_formativo.csv`: evidências, interpretação, IDs dos erros observados, ação e limites por recomendação.
-- `feedback_alunos/`: relatórios Markdown numerados por ordem de ID do aluno (por exemplo `aluno_03.md` para A03 neste conjunto).
-- `previsoes_validacao.csv`: previsões individuais, histórico disponível e resultado observado.
-- `metricas_validacao.csv`: métricas dos três modelos nos mesmos eventos.
-- `calibracao_validacao.csv`: cinco faixas de probabilidade por modelo, contagem e taxa observada.
+O diagnóstico combina as estimativas probabilísticas, as taxas observadas e as evidências relacionais.
 
-CSV: separador vírgula; codificação UTF-8 com BOM; probabilidades e taxas na escala de 0 a 1. Campo de taxa vazio significa ausência de observações, não zero acertos.
+| Domínio estimado pelo BKT | Classificação |
+| --- | --- |
+| Abaixo de 40% | Baixo |
+| De 40% a menos de 60% | Em desenvolvimento |
+| De 60% a menos de 80% | Bom estimado |
+| A partir de 80% | Elevado estimado |
 
-## Método
+Também são consideradas a quantidade de questões respondidas e possíveis divergências entre a estimativa probabilística e o desempenho observado.
+Essas classificações são heurísticas iniciais, não critérios educacionais clinicamente validados.
 
-### 1. Bayesian Knowledge Tracing (BKT)
+### 6.5. Recomendações personalizadas
 
-Parâmetros iniciais: P(L0)=0,20; P(T)=0,05; P(S)=0,10; P(G)=1/número de alternativas. Após cada resposta, aplica-se Bayes para atualizar a crença de domínio e, em seguida, a transição P(L')=P(L|resposta)+(1-P(L|resposta))P(T). A estimativa representa o estado após a oportunidade de aprendizagem. Os parâmetros são hipóteses, não valores calibrados.
+O plano de estudos é organizado em três etapas:
 
-**Mudança da V1:** só questões sem habilidade secundária atualizam diretamente o BKT, evitando atribuir erros conjuntos à habilidade principal. Preservam-se todas as tentativas dessas questões na ordem cronológica. Sem observações individuais, retorna-se o prior de 0,20 explicitamente identificado como sem evidências. A coluna `taxa_acerto_observada` ainda considera todas as tentativas em que a habilidade é principal; `taxa_individual` usa só primeiras tentativas isoladas.
+1. Revisão de fundamentos ou coleta de evidências adicionais.
+2. Prática e investigação das relações entre habilidades.
+3. Manutenção do conhecimento.
 
-### 2. Grafo
+As atividades propostas são sugestões gerais associadas às micro-habilidades, não questões inéditas geradas automaticamente nem sequências de pré-requisitos causais.
 
-Arestas não direcionadas entre habilidades que coocorrem em questões. Peso = quantidade de questões compartilhadas. Prioridade experimental = (1 − domínio próprio) + 0,25 × média ponderada das lacunas dos vizinhos. Escala de 0 a 1,25; não é probabilidade. Não altera o BKT e não indica causalidade ou pré-requisito. A prioridade é usada para ordenar ações individuais dentro da mesma etapa do plano, não para decidir domínio.
+### 6.6. Feedback formativo
 
-### 3. Análise relacional
+Cada recomendação apresenta:
 
-Utiliza somente a primeira tentativa registrada de cada aluno/questão, tanto individual quanto conjunta. Para cada par A e B: taxas isoladas a e b, taxa conjunta c e diferença D=(a+b)/2−c. D é descritiva, não uma estimativa validada de integração. Classifica dificuldades possíveis, desempenho atípico, desempenho favorável ou resultado inconclusivo. Mínimo inicial: quatro questões distintas isoladas por habilidade e duas conjuntas. Desempenho alto >=70%; baixo <50%; diferença relevante >=25 pontos percentuais. Todas as classificações com dados suficientes continuam preliminares.
+- Evidências observadas no histórico do estudante;
+- Quantidade de acertos e questões analisadas;
+- Identificação das questões respondidas incorretamente na primeira tentativa;
+- Interpretação preliminar das dificuldades;
+- Próxima ação de estudo;
+- Identificação de questões ainda não respondidas, quando disponíveis;
+- Limitações da interpretação.
 
-### 4. Diagnóstico e recomendação
+Um relatório individual é exportado em Markdown para cada estudante.
+Como o conjunto de dados não contém enunciados, alternativas selecionadas ou registros do raciocínio do estudante, o sistema não atribui erros conceituais específicos sem evidências suficientes.
+A investigação conceitual adaptativa constitui uma possibilidade de evolução futura, mediante dados adicionais e participação de educadores.
 
-Faixas BKT: abaixo de 40% baixo; 40–<60% em desenvolvimento; 60–<80% bom estimado; >=80% elevado estimado. Diagnóstico considera também taxa individual e quantidade de itens. Divergências extremas entre BKT e taxa são sinalizadas. Plano prioriza revisão de fundamentos ou coleta de evidências (etapa 1), prática e investigação de relações (etapa 2) e manutenção (etapa 3). As atividades são sugestões gerais por micro-habilidade, não questões novas geradas nem pré-requisitos causais.
+## 7. Avaliação preditiva exploratória
 
-### 5. Feedback formativo
+A avaliação utiliza um protocolo sequencial (prequential), sem ajuste dos parâmetros aos resultados observados.
+Para cada estudante e micro-habilidade, as questões isoladas são organizadas cronologicamente.
+A avaliação começa após pelo menos três questões distintas anteriores e considera somente a primeira tentativa registrada de cada nova questão.
+O histórico disponível contém todas as tentativas individuais anteriores, inclusive repetições, para os três modelos avaliados.
+Respostas com o mesmo timestamp são previstas antes de qualquer atualização daquele lote, evitando vazamento temporal de informações.
+O objetivo da avaliação é prever o acerto em uma questão individual ainda não respondida pelo estudante, e não validar diretamente sua probabilidade latente de domínio.
 
-Cada recomendação informa o que foi observado (acertos e denominadores, IDs das questões erradas na primeira tentativa), interpretação, próxima ação, IDs de questões ainda não respondidas do mesmo tipo (quando disponíveis) e limites. Não inventa erros conceituais específicos. Um relatório por estudante é exportado em Markdown. O banco não tem enunciados, alternativa selecionada ou raciocínio do aluno; a investigação conceitual adaptativa fica para uma evolução futura com metadados adicionais e revisão de educadores.
+### Modelos comparados
 
-### 6. Avaliação preditiva exploratória
+**Taxa acumulada suavizada**
 
-Avaliação sequencial (prequential), sem ajuste de parâmetros aos resultados. Para cada aluno e habilidade, ordenamos as questões isoladas por data. Começamos a avaliar depois de pelo menos três questões distintas anteriores; avaliamos somente a primeira tentativa registrada de cada nova questão. O histórico contém todas as tentativas individuais anteriores, inclusive repetições, para os três modelos. Respostas com mesmo timestamp são previstas antes de qualquer atualização daquele lote. O desfecho previsto é o acerto em questão individual inédita para aquele aluno, não a probabilidade latente de domínio. Não testamos questões conjuntas nem alunos novos.
+$$
+P(acerto)=\frac{1+acertos}{2+tentativas}
+$$
 
-- Taxa acumulada suavizada: `(1 + acertos)/(2 + tentativas)`.
-- Média móvel suavizada: mesma fórmula nas últimas três tentativas.
-- BKT: `P(acerto) = P(L)*(1-P(S)) + (1-P(L))/alternativas`, com estado de domínio atualizado apenas por respostas anteriores.
-- Brier Score: média de `(p-y)^2`; log loss: média de `-y*ln(p)-(1-y)*ln(1-p)`; ambos menores são melhores. Acurácia: classificação `p >= 0,5`. Calibração descritiva por cinco faixas fixas, não teste estatístico.
+**Média móvel suavizada**
 
-Resultados (265 previsões comuns, dados fictícios):
+Utiliza a mesma expressão da taxa acumulada, considerando somente as três últimas tentativas.
 
-| Modelo | Brier | Log loss | Acurácia |
+**Bayesian Knowledge Tracing**
+
+$$
+P(acerto)=P(L)(1-P(S))+(1-P(L))P(G)
+$$
+
+O estado de domínio é atualizado somente a partir das respostas anteriores ao evento previsto.
+
+### Métricas de avaliação
+
+- **Brier Score:** erro quadrático médio das probabilidades previstas.
+- **Log Loss:** penalização de previsões probabilísticas incorretas.
+- **Acurácia:** proporção de classificações corretas, utilizando o limiar de 0,5.
+- **Calibração:** comparação descritiva entre probabilidades previstas e frequências observadas em cinco intervalos fixos.
+
+### Resultados experimentais
+
+Foram avaliados 265 eventos de previsão comuns aos três modelos, utilizando os dados fictícios fornecidos.
+
+| Modelo | Brier Score | Log Loss | Acurácia |
 | --- | ---: | ---: | ---: |
 | Taxa acumulada | 0,237612 | 0,672364 | 62,26% |
 | Média móvel | 0,236981 | 0,670011 | 62,26% |
 | BKT | 0,254438 | 0,726509 | 59,62% |
 
-A média móvel teve as menores perdas neste protocolo, por pequena diferença em relação à taxa acumulada. O BKT fixo não superou as referências simples. Não há evidência de superioridade do BKT; mantemos seu domínio latente como hipótese interpretável de pesquisa, não como medida validada. Para previsão de acertos, a média móvel é a referência provisória mais promissora neste teste. A decisão de adotar BKT em produção exigiria calibração em dados separados e nova avaliação fora da amostra. Não ajustar parâmetros e reavaliar nos mesmos eventos como se fossem teste independente. O teste não avalia benefício do grafo, feedback ou recomendações; tampouco demonstra impacto pedagógico.
+Valores menores de Brier Score e Log Loss indicam melhor desempenho preditivo.
+A média móvel apresentou as menores perdas neste protocolo, com pequena diferença em relação à taxa acumulada.
+O BKT, utilizando parâmetros fixos, não superou os modelos estatísticos de referência.
+Sua utilização no protótipo permanece associada à hipótese de representação interpretável do domínio latente e da evolução do conhecimento, e não a uma superioridade preditiva demonstrada.
+Para previsão de acertos, a média móvel constitui a referência provisória mais promissora neste experimento.
+Uma eventual adoção do BKT em produção exigiria calibração dos parâmetros em dados separados e avaliação independente.
+A avaliação realizada não demonstra benefícios pedagógicos do grafo, do feedback formativo ou das recomendações personalizadas.
 
-## Testes e limitações
+## 8. Resultados gerados
 
-Com os dados fornecidos, a execução gera 96 estimativas, 6 arestas, 72 análises relacionais, 96 diagnósticos e 136 recomendações. Dez testes verificam cálculo manual do BKT, prior, isolamento de questões conjuntas, primeira tentativa, regras de classificação, execução completa, previsão de acerto, ausência de vazamento em timestamps iguais e métricas. Isso demonstra funcionamento do software, não validade educacional.
+A execução do protótipo produz:
 
-- BKT não estima diretamente domínio a partir de questões conjuntas; perde parte da informação em troca de uma atribuição mais transparente.
-- BKT assume parâmetros fixos, aprendizagem após oportunidades e não modela esquecimento. Pode produzir probabilidades muito altas ou baixas. Repetições podem refletir memorização. A taxa de primeiras tentativas resume o histórico, enquanto o BKT dá peso à sequência; divergências podem ser legítimas.
-- Poucos itens por relação (2–4 no banco), dificuldade não calibrada e chance de chute impedem inferências fortes sobre dificuldades de integração. O grafo representa coocorrência, não dependência pedagógica.
-- Limiares e peso 0,25 são heurísticas iniciais. Recomendações não foram validadas em alunos reais; ausência de alerta não significa domínio.
-- A avaliação sequencial inicial já compara BKT com referências simples. Uma avaliação futura precisa testar generalização em dados reais independentes, calibrar parâmetros, comparar recomendações com e sem grafo e medir impacto pedagógico com estudantes e educadores (aprendizagem em itens inéditos, retenção e compreensão das próprias lacunas).
+| Indicador | Quantidade |
+| --- | ---: |
+| Estudantes analisados | 12 |
+| Micro-habilidades | 8 |
+| Questões | 80 |
+| Registros de respostas | 665 |
+| Estimativas individuais de domínio | 96 |
+| Arestas do grafo | 6 |
+| Análises relacionais | 72 |
+| Diagnósticos individuais | 96 |
+| Recomendações | 136 |
+| Relatórios individuais | 12 |
+| Eventos de previsão comparados | 265 |
 
-## Transparência
+### Arquivos de saída
 
-Protótipo elaborado com auxílio do ChatGPT para discussão de arquitetura, implementação e testes. Revisão humana e fundamentação bibliográfica ainda necessárias para o relatório final.
+| Arquivo | Conteúdo |
+| --- | --- |
+| `estimativas_bkt_grafo.csv` | Estimativas de domínio, prioridades e quantidades de tentativas. |
+| `arestas_grafo.csv` | Relações entre habilidades e questões associadas. |
+| `grafo_habilidades.png` | Representação visual do grafo. |
+| `desempenho_relacional.csv` | Taxas individuais e conjuntas, diferenças e classificações preliminares. |
+| `diagnostico_alunos.csv` | Indicadores individuais e alertas relacionais. |
+| `recomendacoes.csv` | Plano de estudos ordenado, ações e justificativas. |
+| `feedback_formativo.csv` | Evidências, interpretações, ações e limitações. |
+| `feedback_alunos/` | Relatórios individuais em Markdown. |
+| `previsoes_validacao.csv` | Previsões individuais e resultados observados. |
+| `metricas_validacao.csv` | Métricas comparativas dos modelos. |
+| `calibracao_validacao.csv` | Análise descritiva de calibração. |
+
+Os arquivos CSV utilizam separador por vírgula e codificação UTF-8 com BOM.
+
+As probabilidades e taxas são representadas na escala de 0 a 1. Campos de taxa vazios representam ausência de observações, e não zero acertos.
+
+### Visualização das relações entre micro-habilidades
+
+![Grafo de micro-habilidades](outputs/grafo_habilidades.png)
+
+## 9. Testes automatizados
+
+O protótipo possui 10 testes unitários e de integração, contemplando:
+
+- Verificação do cálculo probabilístico do BKT;
+- Comportamento da probabilidade inicial;
+- Separação entre questões individuais e conjuntas;
+- Identificação da primeira tentativa;
+- Critérios de classificação;
+- Execução integrada do protótipo;
+- Previsão de acertos;
+- Prevenção de vazamento temporal;
+- Cálculo das métricas de avaliação.
+
+Os testes verificam o funcionamento computacional do software, não sua validade educacional.
+
+## 10. Limitações
+
+- O BKT não utiliza diretamente questões conjuntas para atualizar o domínio individual, perdendo parte da informação em favor de uma atribuição mais transparente.
+- Os parâmetros probabilísticos são fixos e ainda não foram calibrados empiricamente.
+- O BKT tradicional não modela explicitamente o esquecimento.
+- Tentativas repetidas podem refletir memorização das respostas.
+- O número reduzido de questões por relação limita a interpretação das dificuldades conjuntas.
+- A dificuldade dos itens não foi calibrada.
+- O grafo representa coocorrência, e não dependência pedagógica ou causalidade.
+- Os limiares de classificação e o peso relacional são heurísticas exploratórias.
+- As recomendações não foram validadas com estudantes reais.
+- A ausência de um alerta não implica domínio comprovado.
+- O desempenho preditivo do BKT não superou as referências estatísticas neste experimento.
+
+## 11. Trabalhos futuros
+
+- Calibração dos parâmetros probabilísticos utilizando dados reais.
+- Avaliação independente da capacidade de generalização dos modelos.
+- Investigação de mecanismos de esquecimento e retenção.
+- Comparação experimental das recomendações com e sem a utilização do grafo.
+- Incorporação de informações sobre dificuldade das questões e alternativas selecionadas.
+- Avaliação pedagógica com estudantes e educadores.
+- Investigação do impacto das recomendações sobre aprendizagem, retenção e compreensão das próprias dificuldades.
+- Desenvolvimento de uma interface visual para integração dos resultados à plataforma educacional.
+
+## 12. Autoria e transparência no uso de inteligência artificial
+
+O projeto foi desenvolvido a partir de pesquisa bibliográfica, investigação de abordagens computacionais e análise crítica do problema apresentado pelo desafio técnico Chagas AI. A concepção da proposta, o direcionamento da pesquisa, o raciocínio metodológico e a revisão crítica foram conduzidos pela autora.
+O ChatGPT foi utilizado como ferramenta auxiliar durante as etapas de discussão da arquitetura, implementação do código, depuração, testes automatizados e organização da documentação.As decisões técnicas foram discutidas e revisadas pela autora, considerando a fundamentação teórica, os resultados experimentais e as limitações identificadas durante o desenvolvimento.
+
+---
+
+Projeto desenvolvido para o desafio técnico Chagas AI.
